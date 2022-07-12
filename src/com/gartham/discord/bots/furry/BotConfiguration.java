@@ -1,4 +1,4 @@
-package com.gartham.templates.discordbot;
+package com.gartham.discord.bots.furry;
 
 import org.alixia.javalibrary.parsers.cli.CLIParams;
 
