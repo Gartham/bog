@@ -127,7 +127,7 @@ public class Bog {
 				}
 
 				var x = switch (random.nextInt(6)) {
-				case 0 -> "while parashooting.";
+				case 0 -> "while parachuting.";
 				case 1 -> "at a murder scene.";
 				case 2 -> "behind your ear.";
 				case 3 -> "in a desk drawer.";
