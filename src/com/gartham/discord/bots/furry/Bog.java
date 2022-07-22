@@ -2,11 +2,12 @@ package com.gartham.discord.bots.furry;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -18,6 +19,7 @@ import org.alixia.javalibrary.json.JSONParser;
 import org.alixia.javalibrary.parsers.cli.CLIParams;
 import org.alixia.javalibrary.streams.CharacterStream;
 
+import gartham.c10ver.utils.Utilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -99,10 +101,41 @@ public class Bog {
 				Commands.slash("beg", "Ask me for cash. I dare you. (Something random happens when you ask.)"))
 				.complete();
 
+		Map<String, Instant> lastUse = new HashMap<>();
+
 		jda.addEventListener((EventListener) event -> {
 			if (event instanceof SlashCommandInteractionEvent) {
 				var e = (SlashCommandInteractionEvent) event;
+
+				if (lastUse.containsKey(e.getUser().getId())
+						&& Duration.between(lastUse.get(e.getUser().getId()), Instant.now()).abs().toSeconds() < 45) {
+					e.reply("You're running that command too fast! You need to wait 45 seconds before reusing it.")
+							.complete();
+					return;
+				}
+				lastUse.put(e.getUser().getId(), Instant.now());
+
 				var ud = getUserData(e.getUser().getId());
+				int amount = random.nextInt(35) + 25;
+				ud.getBalance().increase(amount);
+				try {
+					ud.flush();
+				} catch (IOException e1) {
+					System.err.println("Failed to flush " + e.getUser().getId());
+				}
+
+				var x = switch (random.nextInt(6)) {
+				case 0 -> "while parashooting.";
+				case 1 -> "at a murder scene.";
+				case 2 -> "behind your ear.";
+				case 3 -> "in a desk drawer.";
+				case 4 -> "under a tree.";
+				default -> "in a locker.";
+				};
+
+				e.reply("You found " + Utilities.format(amount) + ' ' + x + " You now have "
+						+ Utilities.format(ud.getBalance().get()) + '.').complete();
+
 			}
 		});
 	}
