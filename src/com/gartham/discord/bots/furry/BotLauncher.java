@@ -23,7 +23,9 @@ public class BotLauncher {
 
 		jda.awaitReady();
 
-		jda.upsertCommand(Commands.slash("beg", "Ask me for cash. I dare you.")).complete();
+		jda.upsertCommand(
+				Commands.slash("beg", "Ask me for cash. I dare you. (Something random happens when you ask.)"))
+				.complete();
 
 		jda.addEventListener((EventListener) event -> {
 			if (event instanceof SlashCommandInteractionEvent) {
