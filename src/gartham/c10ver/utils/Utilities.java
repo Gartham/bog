@@ -34,7 +34,7 @@ import org.alixia.javalibrary.strings.matching.Matching;
 
 public final class Utilities {
 
-	public final static String CURRENCY_SYMBOL = "\u058D", ZERO_WIDTH_SPACE = "\u200B",
+	public final static String CURRENCY_SYMBOL = "$", ZERO_WIDTH_SPACE = "\u200B",
 			UNICODE_EMOJI_ICON_VARIATION_SELECTOR = "\uFE0F";
 
 	private static final MoneyUnit[] MONEY_UNITS = MoneyUnit.values();
@@ -369,7 +369,7 @@ public final class Utilities {
 	}
 
 	public static String format(BigInteger money) {
-		return CURRENCY_SYMBOL + ' ' + formatNumber(money);
+		return CURRENCY_SYMBOL + formatNumber(money);
 	}
 
 	public static String format(long money) {
