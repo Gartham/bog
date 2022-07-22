@@ -107,11 +107,13 @@ public class Bog {
 			if (event instanceof SlashCommandInteractionEvent) {
 				var e = (SlashCommandInteractionEvent) event;
 
-				if (lastUse.containsKey(e.getUser().getId())
-						&& Duration.between(lastUse.get(e.getUser().getId()), Instant.now()).abs().toSeconds() < 45) {
-					e.reply("You're running that command too fast! You need to wait 45 seconds before reusing it.")
-							.complete();
-					return;
+				if (lastUse.containsKey(e.getUser().getId())) {
+					long sec = Duration.between(lastUse.get(e.getUser().getId()), Instant.now()).abs().toSeconds();
+					if (sec < 45) {
+						e.reply("You're running that command too fast! You need to wait " + (45 - sec)
+								+ " seconds before reusing it.").complete();
+						return;
+					}
 				}
 				lastUse.put(e.getUser().getId(), Instant.now());
 
