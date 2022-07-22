@@ -46,6 +46,8 @@ public class DataObject extends JSONObject {
 
 		@Override
 		public String get() {
+			if (!containsKey(key))
+				return "";
 			return getString(key);
 		}
 
@@ -67,6 +69,8 @@ public class DataObject extends JSONObject {
 
 		@Override
 		public Boolean get() {
+			if (!containsKey(key))
+				return false;
 			return getBoolean(key);
 		}
 	}
@@ -83,6 +87,8 @@ public class DataObject extends JSONObject {
 
 		@Override
 		public Integer get() {
+			if (!containsKey(key))
+				return 0;
 			return getInt(key);
 		}
 	}
@@ -99,7 +105,24 @@ public class DataObject extends JSONObject {
 
 		@Override
 		public BigInteger get() {
+			if (!containsKey(key))
+				return BigInteger.ZERO;
 			return new BigInteger(getString(key));
+		}
+
+		/**
+		 * Increases the value by the specified amount (adds it to the current value)
+		 * and returns the result. The value that is returned from this method is what
+		 * the entry is set to by the completion of this method.
+		 * 
+		 * @param amount The amount to add to this entry's value.
+		 * @return The value that this entry was increased to.
+		 */
+		public BigInteger increase(long amount) {
+			var bi = get();
+			bi = bi.add(BigInteger.valueOf(amount));
+			put(bi);
+			return bi;
 		}
 	}
 
