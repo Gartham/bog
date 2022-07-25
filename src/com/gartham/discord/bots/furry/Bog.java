@@ -216,6 +216,7 @@ public class Bog {
 								if (e.getUser().getId().equals(id)) {
 									if (e.getComponentId().equals(String.valueOf(ind + 1))) {
 										var amt = random.nextInt(200) + 60;
+										remove();
 										e.reply("You picked right and earned " + Utilities.format(amt) + '.')
 												.complete();
 										var ud = getUserData(id);
