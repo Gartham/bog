@@ -24,6 +24,8 @@ import org.alixia.javalibrary.json.JSONParser;
 import org.alixia.javalibrary.parsers.cli.CLIParams;
 import org.alixia.javalibrary.streams.CharacterStream;
 
+import com.gartham.discord.bots.furry.commands.BegCommand;
+import com.gartham.discord.bots.furry.commands.WordCommand;
 import com.gartham.utilities.bog.dictionary.parser.DictionaryEntryParser;
 import com.gartham.utilities.bog.dictionary.parser.DictionaryEntryParser.Entry;
 import com.gartham.utilities.bog.dictionary.parser.DictionaryEntrySplitter;
@@ -100,6 +102,11 @@ public class Bog {
 	private final BotConfiguration config;
 	private final Random random = new Random();
 	private final Timer timer = new Timer();
+	private JDA jda;
+
+	public JDA getJda() {
+		return jda;
+	}
 
 	public Timer getTimer() {
 		return timer;
@@ -118,24 +125,14 @@ public class Bog {
 	}
 
 	public void start() throws LoginException, InterruptedException {
-		JDA jda = JDABuilder.createDefault(config.getToken(), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
-				.build();
+		jda = JDABuilder.createDefault(config.getToken(), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS)).build();
 		jda.awaitReady();
-		jda.updateCommands()
-				.addCommands(
-						Commands.slash("beg", "Ask me for cash. I dare you. (Something random happens when you ask.)"),
-						Commands.slash("word", "Pick the right definition and you'll be rewarded."))
-				.complete();
 
-		jda.addEventListener((EventListener) event -> {
-			if (event instanceof SlashCommandInteractionEvent) {
-				var e = (SlashCommandInteractionEvent) event;
-				if (e.getName().equals("beg")) {
-				} else if (e.getName().equals("word")) {
-				}
-			}
-		});
+		BegCommand bc = new BegCommand(this);
+		WordCommand wc = new WordCommand(this);
 
+		jda.updateCommands().addCommands(bc.makeCommand(), wc.makeCommand()).complete();
+		jda.addEventListener(bc, wc);
 	}
 
 	public BotConfiguration getConfig() {
