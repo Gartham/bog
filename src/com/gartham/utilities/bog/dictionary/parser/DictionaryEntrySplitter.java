@@ -31,29 +31,6 @@ public class DictionaryEntrySplitter extends BufferedParser<String> {
 		this(in, false);
 	}
 
-	public static class Entry {
-		private final String word, pos, definition;
-
-		private Entry(String word, String pos, String definition) {
-			this.word = word;
-			this.pos = pos;
-			this.definition = definition;
-		}
-
-		public String getWord() {
-			return word;
-		}
-
-		public String getPos() {
-			return pos;
-		}
-
-		public String getDefinition() {
-			return definition;
-		}
-
-	}
-
 	@Override
 	protected String read() {
 		return in.peek() >= 0 ? in.parseBetween("<p>", "</p>") : null;
