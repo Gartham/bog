@@ -217,10 +217,11 @@ public class Bog {
 									if (e.getComponentId().equals(String.valueOf(ind + 1))) {
 										var amt = random.nextInt(200) + 60;
 										remove();
-										e.reply("You picked right and earned " + Utilities.format(amt) + '.')
-												.complete();
+
 										var ud = getUserData(id);
-										ud.getBalance().increase(amt);
+										e.reply("You picked right and earned " + Utilities.format(amt)
+												+ ". You now have " + Utilities.format(ud.getBalance().increase(amt))
+												+ '.').complete();
 										try {
 											ud.flush();
 										} catch (IOException ex) {
