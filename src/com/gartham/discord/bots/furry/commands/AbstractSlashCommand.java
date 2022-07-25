@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 public abstract class AbstractSlashCommand implements SlashCommand {
 	private final String name;
 
-	private AbstractSlashCommand(String name) {
+	public AbstractSlashCommand(String name) {
 		this.name = name;
 	}
 
