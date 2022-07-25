@@ -56,6 +56,6 @@ public class DictionaryEntrySplitter extends BufferedParser<String> {
 
 	@Override
 	protected String read() {
-		return in.peek() >= 0 ? in.parseBetween("<p>", "</p>") : -1;
+		return in.peek() >= 0 ? in.parseBetween("<p>", "</p>") : null;
 	}
 }
