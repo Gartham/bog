@@ -125,7 +125,7 @@ public class WordCommand extends AbstractSlashCommand {
 						ActionRow.of(Button.primary("1", Emoji.fromUnicode("U+0031U+FE0FU+20E3")).asDisabled(),
 								Button.primary("2", Emoji.fromUnicode("U+0032U+FE0FU+20E3")).asDisabled(),
 								Button.primary("3", Emoji.fromUnicode("U+0033 U+FE0F U+20E3")).asDisabled()))
-						.setContent("Option `" + (ind + 1) + "` was correct!\n" + ":one: **" + entries[0].getWord()
+						.setContent("Option `" + (ind + 1) + "` was correct!\n\n" + ":one: **" + entries[0].getWord()
 								+ "** - " + entries[0].getDefinition() + "\n:two: **" + entries[1].getWord() + "** - "
 								+ entries[1].getDefinition() + "\n:three: **" + entries[2].getWord() + "** - "
 								+ entries[2].getDefinition())
@@ -145,13 +145,13 @@ public class WordCommand extends AbstractSlashCommand {
 
 		cel.repl = e
 				.reply("Pick the right definition for this word: **" + entry.getWord()
-						+ "**. You have `45` seconds. \n\n:one: " + entries[0].getDefinition() + "\n:two: "
+						+ "**. You have `150` seconds. \n\n:one: " + entries[0].getDefinition() + "\n:two: "
 						+ entries[1].getDefinition() + "\n:three: " + entries[2].getDefinition())
 				.addActionRow(Button.primary("1", Emoji.fromUnicode("U+0031U+FE0FU+20E3")),
 						Button.primary("2", Emoji.fromUnicode("U+0032U+FE0FU+20E3")),
 						Button.primary("3", Emoji.fromUnicode("U+0033 U+FE0F U+20E3")))
 				.complete();
-		bog.getTimer().schedule(cel.task, 45000);
+		bog.getTimer().schedule(cel.task, 150000);
 
 	}
 
