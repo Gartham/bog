@@ -16,7 +16,7 @@ public class BegCommand extends AbstractSlashCommand {
 	private final Bog bog;
 
 	public BegCommand(Bog bog) {
-		super("beg");
+		super("beg", "Ask me for cash. I dare you. (Something random happens when you ask.)");
 		this.bog = bog;
 	}
 

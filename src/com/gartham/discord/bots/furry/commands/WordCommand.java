@@ -18,12 +18,10 @@ import org.alixia.javalibrary.streams.CharacterStream;
 
 import com.gartham.discord.bots.furry.Bog;
 import com.gartham.utilities.bog.dictionary.parser.DictionaryEntryParser;
-import com.gartham.utilities.bog.dictionary.parser.DictionaryEntrySplitter;
 import com.gartham.utilities.bog.dictionary.parser.DictionaryEntryParser.Entry;
+import com.gartham.utilities.bog.dictionary.parser.DictionaryEntrySplitter;
 
 import gartham.c10ver.utils.Utilities;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -32,7 +30,6 @@ import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class WordCommand extends AbstractSlashCommand {
 
@@ -54,7 +51,7 @@ public class WordCommand extends AbstractSlashCommand {
 	private final Bog bog;
 
 	public WordCommand(Bog bog) {
-		super("word");
+		super("word", "Pick the right definition and you'll be rewarded.");
 		this.bog = bog;
 	}
 
@@ -108,7 +105,7 @@ public class WordCommand extends AbstractSlashCommand {
 							remove();
 
 							var ud = bog.getUserData(id);
-							e.reply("You picked right and earned " + Utilities.format(amt) + ". You now have "
+							e.reply("You picked right. Here's " + Utilities.format(amt) + ". You now have "
 									+ Utilities.format(ud.getBalance().increase(amt)) + '.').complete();
 							try {
 								ud.flush();
@@ -123,20 +120,28 @@ public class WordCommand extends AbstractSlashCommand {
 				}
 			}
 
-			private void remove() {
-				removed = true;
+			private void disableReply() {
 				repl.editOriginalComponents(
 						ActionRow.of(Button.primary("1", Emoji.fromUnicode("U+0031U+FE0FU+20E3")).asDisabled(),
 								Button.primary("2", Emoji.fromUnicode("U+0032U+FE0FU+20E3")).asDisabled(),
 								Button.primary("3", Emoji.fromUnicode("U+0033 U+FE0F U+20E3")).asDisabled()))
+						.setContent("Option `" + (ind + 1) + "` was correct!\n" + ":one: **" + entries[0].getWord()
+								+ "** - " + entries[0].getDefinition() + "\n:two: **" + entries[1].getWord() + "** - "
+								+ entries[1].getDefinition() + "\n:three: **" + entries[2].getWord() + "** - "
+								+ entries[2].getDefinition())
 						.complete();
-				jda.removeEventListener(this);
+			}
+
+			private void remove() {
+				removed = true;
+				disableReply();
+				bog.getJda().removeEventListener(this);
 
 			}
 		}
 
 		CEL cel = new CEL();
-		jda.addEventListener(cel);
+		bog.getJda().addEventListener(cel);
 
 		cel.repl = e
 				.reply("Pick the right definition for this word: **" + entry.getWord()
@@ -146,7 +151,7 @@ public class WordCommand extends AbstractSlashCommand {
 						Button.primary("2", Emoji.fromUnicode("U+0032U+FE0FU+20E3")),
 						Button.primary("3", Emoji.fromUnicode("U+0033 U+FE0F U+20E3")))
 				.complete();
-		timer.schedule(cel.task, 45000);
+		bog.getTimer().schedule(cel.task, 45000);
 
 	}
 
