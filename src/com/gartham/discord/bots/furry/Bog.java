@@ -6,42 +6,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.security.auth.login.LoginException;
 
-import org.alixia.javalibrary.JavaTools;
 import org.alixia.javalibrary.json.JSONObject;
 import org.alixia.javalibrary.json.JSONParser;
 import org.alixia.javalibrary.parsers.cli.CLIParams;
 import org.alixia.javalibrary.streams.CharacterStream;
 
+import com.gartham.discord.bots.furry.commands.BalanceCommand;
 import com.gartham.discord.bots.furry.commands.BegCommand;
 import com.gartham.discord.bots.furry.commands.WordCommand;
-import com.gartham.utilities.bog.dictionary.parser.DictionaryEntryParser;
-import com.gartham.utilities.bog.dictionary.parser.DictionaryEntryParser.Entry;
-import com.gartham.utilities.bog.dictionary.parser.DictionaryEntrySplitter;
 
-import gartham.c10ver.utils.Utilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class Bog {
@@ -99,6 +81,18 @@ public class Bog {
 		return userData;
 	}
 
+	/**
+	 * Returns <code>true</code> if a {@link UserData} for the specified user has
+	 * already been loaded or if the file for that user data exists.
+	 * 
+	 * @param userid The ID of the user.
+	 * @return <code>true</code> if the {@link UserData} has been loaded or if its
+	 *         file exists, <code>false</code> otherwise.
+	 */
+	public synchronized boolean hasUserData(String userid) {
+		return data.containsKey(userid) || new File(config.getUserDataPath(), userid).isFile();
+	}
+
 	private final BotConfiguration config;
 	private final Random random = new Random();
 	private final Timer timer = new Timer();
@@ -130,9 +124,10 @@ public class Bog {
 
 		BegCommand bc = new BegCommand(this);
 		WordCommand wc = new WordCommand(this);
+		BalanceCommand bal = new BalanceCommand(this);
 
-		jda.updateCommands().addCommands(bc.makeCommand(), wc.makeCommand()).complete();
-		jda.addEventListener(bc, wc);
+		jda.updateCommands().addCommands(bc.command(), wc.command(), bal.command()).complete();
+		jda.addEventListener(bc, wc, bal);
 	}
 
 	public BotConfiguration getConfig() {
